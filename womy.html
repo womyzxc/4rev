@@ -3,8 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile Lanyard - Dynamic with Background Music</title>
+  <title>Profile Lanyard - Dynamic with Video Background</title>
   <style>
+    /* ------------------------------------- */
+    /* NEW CSS for Fullscreen Video Background */
+    /* ------------------------------------- */
+    #video-background {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -100; /* Puts the video behind all other content */
+      background-size: cover;
+      overflow: hidden;
+    }
+    
+    /* Optional: Add a dark overlay to make the white text more readable */
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
+      z-index: -99;
+    }
+
+    /* ------------------------------------- */
+    /* EXISTING CSS (with minor body changes) */
+    /* ------------------------------------- */
     body {
       margin: 0;
       background: #000;
@@ -14,14 +44,20 @@
       align-items: center;
       height: 100vh;
       color: #fff;
+      /* Ensure body is in stacking context for z-index to work */
+      position: relative; 
     }
     .card {
-      background: #0a0a0a;
+      /* Background in CSS is now largely irrelevant due to video background, 
+         but keeping it for the card itself */
+      background: rgba(10, 10, 10, 0.85); /* Slightly transparent card to see video */
+      backdrop-filter: blur(5px); /* Optional: add a blur effect behind the card */
       width: 380px;
       padding: 30px;
       border-radius: 25px;
       text-align: center;
       box-shadow: 0 0 25px rgba(128, 0, 255, 0.3);
+      z-index: 10; /* Ensure content is on top of the video */
     }
     .pfp {
       width: 120px;
@@ -78,19 +114,22 @@
         display: inline-block;
         border-right: 2px solid white;
         padding-right: 4px;
-        min-width: 150px; /* Helps stabilize layout during typing */
+        min-width: 150px; 
     }
   </style>
 </head>
 <body>
   <!-- ============================================== -->
-  <!-- Audio Element for Background Music             -->
-  <!-- !! REPLACE 'background_music.mp3' with your file !! -->
+  <!-- Video Background Element                       -->
+  <!-- !! REPLACE 'background_video.mp4' with your file !! -->
   <!-- ============================================== -->
-  <audio id="background-music" loop muted autoplay>
-    <source src="background_music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+  <video autoplay muted loop id="video-background" preload="auto">
+    <source src="womyvideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  
+  <!-- Overlay to improve text readability -->
+  <div class="video-overlay"></div>
 
   <div class="card">
     <img 
@@ -132,19 +171,6 @@
   </div>
 
   <script>
-    /* === Music Playback Control === */
-    const musicElement = document.getElementById('background-music');
-
-    // Attempt to play music after any user interaction (like a mouse click or keypress)
-    // This is the common workaround for browser autoplay restrictions.
-    document.addEventListener('click', () => {
-      if (musicElement.muted) {
-        musicElement.muted = false;
-        musicElement.play().catch(error => console.log('Autoplay blocked. User interaction required:', error));
-      }
-    }, { once: true });
-
-
     /* === Configuration === */
     const DISCORD_USER_ID = '1184454687865438218';
     const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
