@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Lanyard - Dynamic with Background Music</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+    }
+    .card {
+      background: #0a0a0a;
+      width: 380px;
+      padding: 30px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(128, 0, 255, 0.3);
+    }
+    .pfp {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+    }
+    .icons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .icons img {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .icons img:hover {
+      transform: scale(1.15);
+    }
+    .username {
+      font-size: 20px;
+      padding: 10px 0;
+      border-radius: 12px;
+      background: #111;
+      margin-top: 10px;
+    }
+    .status {
+      margin-top: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    .views {
+      margin-top: 25px;
+      opacity: 0.7;
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    .emoji-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      font-size: 22px;
+    }
+    /* Style for the typing effect (Cursor) */
+    #activity-text { 
+        display: inline-block;
+        border-right: 2px solid white;
+        padding-right: 4px;
+        min-width: 150px; /* Helps stabilize layout during typing */
+    }
+  </style>
+</head>
+<body>
+  <!-- ============================================== -->
+  <!-- Audio Element for Background Music             -->
+  <!-- !! REPLACE 'background_music.mp3' with your file !! -->
+  <!-- ============================================== -->
+  <audio id="background-music" loop muted autoplay>
+    <source src="background_music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div class="card">
+    <img 
+      src="https://cdn.discordapp.com/embed/avatars/0.png" 
+      class="pfp" 
+      id="profile-picture" 
+      alt="Profile Picture" 
+    />
+
+    <div class="emoji-bar" id="emoji-bar">
+      <span>🌿</span>
+      <span>✨</span>
+      <span>💎</span>
+    </div>
+
+    <div class="username" id="discord-username">Loading...</div>
+
+    <div class="status">
+      <strong id="discord-status">Checking Status...</strong><br>
+      <span id="activity-text"></span>
+    </div>
+
+    <div class="icons">
+      <a href="https://discord.com/users/1184454687865438218" target="_blank">
+        <img src="discord.png" alt="Discord" />
+      </a>
+      <a href="https://www.instagram.com/womy.zxc/" target="_blank">
+        <img src="ig.png" alt="Instagram" />
+      </a>
+      <a href="https://www.youtube.com/@womyxyz" target="_blank">
+        <img src="yt.png" alt="YouTube" />
+      </a>
+      <a href="https://t.me/guess" target="_blank">
+        <img src="tg.png" alt="Telegram" />
+      </a>
+    </div>
+
+    <div class="views">👁 Antirevshit</div>
+  </div>
+
+  <script>
+    /* === Music Playback Control === */
+    const musicElement = document.getElementById('background-music');
+
+    // Attempt to play music after any user interaction (like a mouse click or keypress)
+    // This is the common workaround for browser autoplay restrictions.
+    document.addEventListener('click', () => {
+      if (musicElement.muted) {
+        musicElement.muted = false;
+        musicElement.play().catch(error => console.log('Autoplay blocked. User interaction required:', error));
+      }
+    }, { once: true });
+
+
+    /* === Configuration === */
+    const DISCORD_USER_ID = '1184454687865438218';
+    const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+
+    /* === HTML Element Selectors === */
+    const pfpElement = document.getElementById('profile-picture');
+    const usernameElement = document.getElementById('discord-username');
+    const statusElement = document.getElementById('discord-status');
+    const activityElement = document.getElementById('activity-text');
+
+    /* === Typing Effect Variables === */
+    const fallbackText = "Hack the Future, One Bit at a Time";
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 80;
+    let pauseTime = 1600;
+    let typingInterval = null;
+    let isTypingActive = false;
+
+    // Function to start or re-activate the typing effect
+    function typeEffect() {
+        if (isTypingActive) return; 
+        
+        stopTypingEffect(); 
+        isTypingActive = true;
+        
+        typingInterval = setInterval(() => {
+            if (!isDeleting) {
+                // Typing forward
+                activityElement.textContent = fallbackText.substring(0, charIndex + 1);
+                charIndex++;
+                
+                if (charIndex === fallbackText.length) {
+                    isDeleting = true;
+                    setTimeout(() => {
+                        if (isTypingActive) isDeleting = true;
+                    }, pauseTime);
+                    charIndex = fallbackText.length; 
+                }
+            } else {
+                // Deleting backward
+                activityElement.textContent = fallbackText.substring(0, charIndex - 1);
+                charIndex--;
+                
+                if (charIndex === 0) {
+                    isDeleting = false;
+                }
+            }
+        }, typingSpeed);
+    }
+    
+    // Function to stop the typing effect
+    function stopTypingEffect() {
+        if (typingInterval !== null) {
+            clearInterval(typingInterval);
+            typingInterval = null;
+        }
+        isTypingActive = false;
+        charIndex = 0;
+        isDeleting = false;
+    }
+
+
+    /* === Lanyard Data Fetching and Display === */
+    function displayLanyardData(data) {
+        const profileData = data.data;
+
+        if (!profileData) {
+            console.error("Lanyard API returned no data.");
+            statusElement.textContent = "Offline/API Error";
+            activityElement.textContent = "Could not fetch status.";
+            stopTypingEffect();
+            return;
+        }
+
+        // 1. Update Username
+        const username = profileData.discord_user.global_name || profileData.discord_user.username;
+        usernameElement.textContent = username;
+
+        // 2. Update Profile Picture
+        const userId = profileData.discord_user.id;
+        const avatarHash = profileData.discord_user.avatar;
+        if (avatarHash) {
+            const ext = avatarHash.startsWith('a_') ? 'gif' : 'webp';
+            pfpElement.src = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=128`;
+        } else {
+            const discriminator = parseInt(profileData.discord_user.discriminator) % 5;
+            pfpElement.src = `https://cdn.discordapp.com/embed/avatars/${discriminator}.png`;
+        }
+
+        // 3. Update Status (Status remains dynamic)
+        const discordStatus = profileData.discord_status;
+        let statusText = '';
+        if (discordStatus === 'online') {
+            statusText = 'Online';
+        } else if (discordStatus === 'idle') {
+            statusText = 'Idle';
+        } else if (discordStatus === 'dnd') {
+            statusText = 'Do Not Disturb';
+        } else {
+            statusText = 'Offline';
+        }
+        statusElement.textContent = statusText;
+
+        // 4. Activity Text: Always run the custom typing effect
+        typeEffect(); 
+    }
+
+    // Main function to fetch data from Lanyard API
+    async function fetchLanyardData() {
+        try {
+            const response = await fetch(LANYARD_API);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            displayLanyardData(data);
+        } catch (error) {
+            console.error('Failed to fetch Lanyard data:', error);
+            statusElement.textContent = "API Error";
+            activityElement.textContent = "Check console for details.";
+            stopTypingEffect();
+        }
+    }
+
+    // Start fetching data immediately and poll every 30 seconds
+    fetchLanyardData();
+    setInterval(fetchLanyardData, 30000); 
+  </script>
+</body>
+</html>
