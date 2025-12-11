@@ -5,63 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>@shmurda | womy</title>
   <style>
-    /* ------------------------------------- */
-    /* FULLSCREEN BACKGROUND STYLES */
-    /* ------------------------------------- */
-    
-    /* Base Background Container for both video and image */
-    .background-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        min-width: 100%;
-        min-height: 100%;
-        width: auto;
-        height: auto;
-        z-index: -100; /* Puts the background behind all other content */
-        overflow: hidden;
-    }
-    
-    /* 1. Video Background Styles (Default) */
-    #video-background {
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: cover; /* Ensures video covers the entire viewport */
-    }
-    
-    /* 2. Image Background Styles (Uncomment to use instead of video) */
-    /* 
-    .image-background {
-        background-image: url('bg.jpg'); /* CHANGE THIS EXTENSION IF NEEDED (e.g., 'bg.png') */
-        /* background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        width: 100%;
-        height: 100%;
-    }
-    */
-    
-    /* Overlay to improve text readability */
-    .video-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4); /* Dark semi-transparent overlay */
-      z-index: -99;
-    }
 
-    /* ------------------------------------- */
-    /* NEW: Volume Control Styles */
-    /* ------------------------------------- */
+
+    @keyframes glow {
+        0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
+        50% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), 0 0 10px rgba(255, 0, 0, 0.5); }
+        100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
+    }
+    
+ 
     .volume-control-wrapper {
         position: fixed;
         bottom: 20px;
         right: 20px;
-        z-index: 100; /* Ensure it's above everything */
+        z-index: 100;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -87,14 +44,14 @@
         opacity: 1;
     }
 
-    /* Handle for WebKit/Blink (Chrome, Safari, Opera) and Firefox */
+
     #volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        background: #fff; /* White handle */
+        background: #fff;
         cursor: pointer;
     }
 
@@ -105,31 +62,71 @@
         background: #fff;
         cursor: pointer;
     }
-    
-    /* ------------------------------------- */
-    /* GENERAL STYLES */
-    /* ------------------------------------- */
+
+
+
     body {
-      margin: 0;
-      background: #000;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      color: #fff;
-      position: relative; 
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background-color: #000;
+
+        color: #c084fc; 
     }
+
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+
+    .image-background {
+      width: 100%;
+      height: 100%;
+      background: url('https://media.discordapp.net/attachments/1438416051644661852/1448645036903370963/videoframe_19339.png?ex=693c0353&is=693ab1d3&hm=8680463a170fd916b15cdb1452c7d201f53c64d3f503204ba6bce3bcd4164134&&format=webp&quality=lossless&width=1920&height=1080') no-repeat center center/cover;
+    }
+
+    #video-background {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .video-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+    
+
+    
     .card {
-      background: rgba(10, 10, 10, 0.85); 
-      backdrop-filter: blur(5px); 
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(5px);
       width: 380px;
       padding: 30px;
       border-radius: 25px;
       text-align: center;
-      box-shadow: 0 0 25px rgba(128, 0, 255, 0.3);
-      z-index: 10; 
+      z-index: 10;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+      animation: glow 2s infinite alternate;
     }
+    
     .pfp {
       width: 120px;
       height: 120px;
@@ -149,21 +146,32 @@
       cursor: pointer;
       transition: 0.2s;
     }
+
     .icons img:hover {
       transform: scale(1.15);
     }
+
+
     .username {
       font-size: 20px;
       padding: 10px 0;
       border-radius: 12px;
       background: #111;
-      margin-top: 10px;
+      margin-top: 10px; 
+      color: inherit; 
     }
+
     .status {
       margin-top: 20px;
       font-size: 14px;
       opacity: 0.8;
+      color: inherit;
     }
+    
+    .status strong {
+      color: #e9e5ff; 
+    }
+
     .views {
       margin-top: 25px;
       opacity: 0.7;
@@ -172,61 +180,49 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
+      color: inherit;
     }
     .emoji-bar {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-top: 20px;
+      margin-top: 20px; 
       font-size: 22px;
+      color: inherit;
     }
-    /* Style for the typing effect (Cursor) */
-    #activity-text { 
+    #activity-text {
         display: inline-block;
-        border-right: 2px solid white;
+        border-right: 2px solid #c084fc; 
         padding-right: 4px;
-        min-width: 150px; 
+        min-width: 150px;
     }
   </style>
 </head>
 <body>
 
-  <!-- ============================================== -->
-  <!-- AUDIO BACKGROUND ELEMENT (src='revrev.mp3')  -->
-  <!-- Initial volume set to 0.5 (50%), a good default. -->
-  <!-- ============================================== -->
-  <audio id="background-music" src="revrev.mp3" autoplay loop preload="auto" volume="0.5"></audio>
 
-  <!-- ============================================== -->
-  <!-- VOLUME CONTROL WIDGET NEW -->
-  <!-- ============================================== -->
+  <div class="background-container">
+    
+    <div class="image-background"></div>
+    
+    <video autoplay muted loop id="video-background" preload="auto">
+      <source src="revrev.mp4" type="video/mp4"> 
+      Your browser does not support the video tag.
+    </video>
+
+  </div>
+  
+  <div class="video-overlay"></div>
+  
+
+  <audio id="background-music" src="revrev.mp3" autoplay loop preload="auto"></audio>
+
   <div class="volume-control-wrapper">
-    <!-- Speaker emoji/icon for visual cue -->
     <span>🔊</span> 
     <input type="range" id="volume-slider" min="0" max="100" value="50">
   </div>
 
 
-  <!-- ============================================== -->
-  <!-- BACKGROUND CONTAINER: Video is currently active -->
-  <!-- ============================================== -->
-  <div class="background-container">
-    
-    <!-- Video Background (Currently Active) -->
-    <video autoplay muted loop id="video-background" preload="auto">
-      <source src="womyvideo.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    
-    <!-- Image Background (To use, uncomment this div and the CSS block above) -->
-    <!-- 
-    <div class="image-background"></div>
-    -->
-
-  </div>
-  
-  <!-- Overlay to improve text readability -->
-  <div class="video-overlay"></div>
 
   <div class="card">
     <img 
@@ -236,14 +232,13 @@
       alt="Profile Picture" 
     />
 
+    <div class="username" id="discord-username">Loading...</div>
     <div class="emoji-bar" id="emoji-bar">
       <span>🌿</span>
       <span>✨</span>
       <span>💎</span>
     </div>
 
-    <!-- Username section (no badges) -->
-    <div class="username" id="discord-username">Loading...</div>
 
     <div class="status">
       <strong id="discord-status">Checking Status...</strong><br>
@@ -260,8 +255,8 @@
       <a href="https://www.youtube.com/@womyxyz" target="_blank">
         <img src="yt.png" alt="YouTube" />
       </a>
-      <a href="https://t.me/guess" target="_blank">
-        <img src="tg.png" alt="Telegram" />
+      <a href="https://github.com/womyzxc" target="_blank">
+        <img src="tg.png" alt="Github" />
       </a>
     </div>
 
@@ -269,49 +264,40 @@
   </div>
 
   <script>
-    /* === Configuration === */
+
     const DISCORD_USER_ID = '1184454687865438218';
     const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
     const musicElement = document.getElementById('background-music');
     const volumeSlider = document.getElementById('volume-slider');
     
-    // --- Autoplay Music and Volume Control ---
+
     
-    // Function to attempt playing audio when the user interacts
     function enableAudio() {
         if (musicElement.paused) {
-            // Set volume based on the slider's initial position (50)
             musicElement.volume = volumeSlider.value / 100;
             musicElement.play().catch(error => {
                 console.log("Audio play blocked by browser:", error);
-                // You could display a message here asking the user to click to enable sound
             });
         }
     }
     
-    // Set up the event listener for the volume slider to control music volume
     function setupVolumeControl() {
-        // Set initial volume
         musicElement.volume = volumeSlider.value / 100;
-
         volumeSlider.addEventListener('input', () => {
-            // Convert slider value (0-100) to audio volume (0.0-1.0)
             musicElement.volume = volumeSlider.value / 100;
         });
     }
 
-    // Add a simple click listener to the body to attempt to start the music
     document.body.addEventListener('click', enableAudio, { once: true });
-    // Initialize the volume control
     setupVolumeControl();
 
-    /* === HTML Element Selectors === */
+
     const pfpElement = document.getElementById('profile-picture');
     const usernameElement = document.getElementById('discord-username');
     const statusElement = document.getElementById('discord-status');
     const activityElement = document.getElementById('activity-text');
 
-    /* === Typing Effect Variables === */
+
     const fallbackText = "Hack the Future, One Bit at a Time";
     let charIndex = 0;
     let isDeleting = false;
@@ -320,20 +306,23 @@
     let typingInterval = null;
     let isTypingActive = false;
 
-    // Function to start or re-activate the typing effect
+
     function typeEffect() {
-        if (isTypingActive) return; 
+        if (isTypingActive) return;
         
-        stopTypingEffect(); 
+        activityElement.textContent = "";
+        charIndex = 0;
+        isDeleting = false;
+        
         isTypingActive = true;
         
         typingInterval = setInterval(() => {
             if (!isDeleting) {
-                // Typing forward
+
                 activityElement.textContent = fallbackText.substring(0, charIndex + 1);
                 charIndex++;
                 
-                if (charIndex === fallbackText.length) {
+                if (charIndex > fallbackText.length) {
                     isDeleting = true;
                     setTimeout(() => {
                         if (isTypingActive) isDeleting = true;
@@ -341,18 +330,22 @@
                     charIndex = fallbackText.length; 
                 }
             } else {
-                // Deleting backward
+
                 activityElement.textContent = fallbackText.substring(0, charIndex - 1);
                 charIndex--;
                 
-                if (charIndex === 0) {
+                if (charIndex <= 0) {
                     isDeleting = false;
+                    charIndex = 0;
+                    setTimeout(() => {
+                         if (isTypingActive) isDeleting = false;
+                    }, typingSpeed); 
                 }
             }
         }, typingSpeed);
     }
     
-    // Function to stop the typing effect
+
     function stopTypingEffect() {
         if (typingInterval !== null) {
             clearInterval(typingInterval);
@@ -364,7 +357,7 @@
     }
 
 
-    /* === Lanyard Data Fetching and Display === */
+
     function displayLanyardData(data) {
         const profileData = data.data;
 
@@ -376,11 +369,10 @@
             return;
         }
 
-        // 1. Update Username
         const username = profileData.discord_user.global_name || profileData.discord_user.username;
         usernameElement.textContent = username;
 
-        // 2. Update Profile Picture
+
         const userId = profileData.discord_user.id;
         const avatarHash = profileData.discord_user.avatar;
         if (avatarHash) {
@@ -391,7 +383,7 @@
             pfpElement.src = `https://cdn.discordapp.com/embed/avatars/${discriminator}.png`;
         }
 
-        // 3. Update Status (Status remains dynamic)
+
         const discordStatus = profileData.discord_status;
         let statusText = '';
         if (discordStatus === 'online') {
@@ -405,11 +397,13 @@
         }
         statusElement.textContent = statusText;
 
-        // 4. Activity Text: Always run the custom typing effect
-        typeEffect(); 
+
+        if (!isTypingActive) {
+            typeEffect();
+        }
     }
 
-    // Main function to fetch data from Lanyard API
+
     async function fetchLanyardData() {
         try {
             const response = await fetch(LANYARD_API);
@@ -426,7 +420,7 @@
         }
     }
 
-    // Start fetching data immediately and poll every 30 seconds
+
     fetchLanyardData();
     setInterval(fetchLanyardData, 30000); 
   </script>
