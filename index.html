@@ -1,416 +1,469 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Antirevshit | Peace Over War</title>
-  <!-- FAVICON -->
-  <link rel="icon" type="image/png" href="https://i.imgur.com/xgZvs4V.png" />
-  <style>
-    /* CSS Variables for Easy Theming */
-    :root {
-      --primary-color: #0ff; /* Neon cyan/blue */
-      --secondary-color: #fff; /* White */
-      --tertiary-color: #000; /* Black */
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Antirevshit | Peace Over War</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/xgZvs4V.png" />
+<style>
+:root {
+	--primary-color: #0ff;
+	--secondary-color: #fff;
+	--tertiary-color: #000;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+html, body {
+	height: 100%;
+	width: 100%;
+	font-family: Copperplate, Papyrus, fantasy;
+	overflow: hidden;
+	color: var(--secondary-color);
+	cursor: none;
+}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { 
-      height: 100%; 
-      width: 100%; 
-      font-family: Copperplate, Papyrus, fantasy; 
-      overflow: hidden;
-      color: var(--secondary-color);
-      cursor: none; /* Hide default cursor */
-    }
-    
-    /* Accessibility: Visible Focus for Keyboard Navigation */
-    a:focus, button:focus {
-        outline: 3px solid #ff0; /* Yellow outline for high visibility */
-        outline-offset: 3px;
-        box-shadow: 0 0 10px #ff0;
-    }
+a:focus, button:focus {
+	outline: 3px solid #ff0;
+	outline-offset: 3px;
+	box-shadow: 0 0 10px #ff0;
+}
 
-    /* Site content & Fade-in transition */
-    #site {
-      display: flex;
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      opacity: 0; /* Hidden initially */
-      transition: opacity 1s ease-in; /* Fade in effect */
-    }
-    #site.loaded {
-        opacity: 1; /* Fade in when script marks it loaded */
-    }
+#site {
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	opacity: 0;
+	transition: opacity 1s ease-in;
+}
+#site.loaded {
+	opacity: 1;
+}
 
-    /* Full-screen Background Image/GIF */
-    #loopGif {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover; 
-      z-index: -2;
-      filter: saturate(1.2) brightness(0.9);
-    }
+#loopGif {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	object-fit: cover;
+	z-index: -2;
+	filter: saturate(1.2) brightness(0.9);
+}
 
-    /* Gradient Overlay for Contrast */
-    #background-overlay {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.5) 100%);
-      z-index: -1; 
-    }
+#background-overlay {
+	content: '';
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.5) 100%);
+	z-index: -1;
+}
 
-    /* New Blended Focus Image Styling */
-    #title-focus-img {
-        max-width: 250px;
-        height: auto;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        box-shadow: none; /* Removed glowing effect */
-        filter: none; /* Removed filter effects */
-        transition: transform 0.1s linear, box-shadow 0.3s ease-out; /* Adjusted transition */
-    }
+#devtool-blocker {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--tertiary-color);
+	z-index: 999999;
+	display: none;
+	justify-content: center;
+	align-items: center;
+	font-size: 2em;
+	color: var(--primary-color);
+	padding: 20px;
+	text-align: center;
+	opacity: 0.8;
+	transition: opacity 0.5s ease-out;
+	animation: blinkText 1.5s step-end infinite alternate;
+}
+@keyframes blinkText {
+	from {
+		opacity: 1;
+		letter-spacing: normal;
+	}
+	to {
+		opacity: 0.9;
+		letter-spacing: 2px;
+	}
+}
 
-    #title-focus-img:hover {
-        box-shadow: none; /* Removed hover glow */
-    }
+#title-focus-img {
+	max-width: 250px;
+	height: auto;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	box-shadow: none;
+	filter: none;
+	transition: transform 0.1s linear, box-shadow 0.3s ease-out;
+}
+#title-focus-img:hover {
+	box-shadow: none;
+}
 
-    /* New Animated Heading Style */
-    #main-heading {
-      font-size: 3.5em;
-      text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
-      margin-bottom: 50px;
-      letter-spacing: 5px;
-      animation: neonGlow 2s ease-in-out infinite alternate, colorCycle 8s linear infinite; 
-    }
-    @keyframes neonGlow {
-      from { text-shadow: 0 0 5px var(--secondary-color), 0 0 10px var(--secondary-color), 0 0 20px var(--primary-color); }
-      to { text-shadow: 0 0 10px var(--secondary-color), 0 0 25px var(--primary-color), 0 0 40px var(--primary-color); }
-    }
-    @keyframes colorCycle {
-	    0%   { color: var(--primary-color); }
-	    25%  { color: #f0f; /* Magenta */ }
-	    50%  { color: #0ff; /* Cyan */ }
-	    75%  { color: #ff0; /* Yellow */ }
-	    100% { color: var(--primary-color); }
-    }
+#main-heading {
+	font-size: 3.5em;
+	text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
+	margin-bottom: 50px;
+	letter-spacing: 5px;
+	animation: neonGlow 2s ease-in-out infinite alternate, colorCycle 8s linear infinite;
+}
+@keyframes neonGlow {
+	from {
+		text-shadow: 0 0 5px var(--secondary-color), 0 0 10px var(--secondary-color), 0 0 20px var(--primary-color);
+	}
+	to {
+		text-shadow: 0 0 10px var(--secondary-color), 0 0 25px var(--primary-color), 0 0 40px var(--primary-color);
+	}
+}
+@keyframes colorCycle {
+	0% {
+		color: var(--primary-color);
+	}
+	25% {
+		color: #f0f;
+	}
+	50% {
+		color: #0ff;
+	}
+	75% {
+		color: #ff0;
+	}
+	100% {
+		color: var(--primary-color);
+	}
+}
 
-    /* Images container */
-    .image-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-      position: relative;
-      z-index: 1; 
-      margin-bottom: 20px;
-    }
+.image-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 40px;
+	position: relative;
+	z-index: 1;
+	margin-bottom: 20px;
+}
+.image-row {
+	display: flex;
+	justify-content: center;
+	gap: 50px;
+	flex-wrap: wrap;
+}
+.image-row > div {
+	flex: 0 0 120px;
+	text-align: center;
+}
+.image-row a {
+	text-decoration: none;
+	display: inline-block;
+}
 
-    .image-row {
-      display: flex;
-      justify-content: center;
-      gap: 50px;
-      flex-wrap: wrap;
-    }
-
-    .image-row > div {
-      flex: 0 0 120px;
-      text-align: center;
-    }
-
-    .image-row a { text-decoration: none; display: inline-block; }
-
-    /* Circular images */
-    .circle-img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 3px solid var(--secondary-color);
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease, border-color 0.3s ease;
-      display: block;
-      margin: 0 auto;
-      pointer-events: auto;
-    }
-    .image-row a:hover .circle-img {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 20px var(--primary-color), inset 0 0 8px #eee;
-      transform: scale(1.1); 
-    }
-
-    /* Labels */
-    .label {
-      color: #ccc;
-      font-size: 14px;
-      text-align: center;
-      margin-top: 8px;
-      line-height: 1.2;
-      transition: color 0.3s ease, text-shadow 0.3s ease;
-      text-shadow: 0 0 2px var(--tertiary-color);
-    }
-    /* When the image is hovered, label glows */
-    .image-row a:hover .label {
-      color: var(--secondary-color); 
-      text-shadow: 0 0 15px var(--primary-color), 0 0 5px var(--secondary-color); 
-    }
-
-    /* Music toggle button styles */
-    #music-toggle {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      border: 2px solid white;
-      border-radius: 5px;
-      padding: 10px 15px;
-      cursor: none;
-      font-size: 0.9em;
-      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-      z-index: 100;
-    }
-    #music-toggle:hover {
-      background: rgba(0, 0, 0, 0.8);
-      border-color: var(--primary-color);
-      box-shadow: 0 0 10px var(--primary-color);
-    }
-
-    /* Cursor Trail Styling */
-    .cursor-dot {
-        width: 10px;
-        height: 10px;
-        background-color: var(--primary-color);
-        border-radius: 50%;
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 99;
-        pointer-events: none;
-        opacity: 0.8;
-        transform: translate(-50%, -50%);
-        transition: transform 0.1s ease-out, opacity 0.3s ease-out;
-        box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color);
-    }
-
-    @media (max-width: 600px) {
-      #main-heading { font-size: 2.5em; letter-spacing: 2px; }
-      #title-focus-img { max-width: 150px; margin-bottom: 15px; } 
-      .image-row { gap: 20px; }
-      .circle-img { width: 70px; height: 70px; }
-      .image-row > div { flex: 0 0 80px; }
-      .label { font-size: 12px; }
-      #music-toggle { bottom: 10px; right: 10px; padding: 8px 12px; }
-
-      /* Remove custom cursor on small screens as it can hinder touch interaction */
-      html, body { cursor: default; }
-      .cursor-dot { display: none; }
-    }
-  </style> 
+.circle-img {
+	width: 100px;
+	height: 100px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 3px solid var(--secondary-color);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease, border-color 0.3s ease;
+	display: block;
+	margin: 0 auto;
+	pointer-events: auto;
+}
+.image-row a:hover .circle-img {
+	border-color: var(--primary-color);
+	box-shadow: 0 0 20px var(--primary-color), inset 0 0 8px #eee;
+	transform: scale(1.1);
+}
+/* Labels */
+.label {
+	color: #ccc;
+	font-size: 14px;
+	text-align: center;
+	margin-top: 8px;
+	line-height: 1.2;
+	text-shadow: 0 0 2px var(--tertiary-color);
+	transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+.image-row a:hover .label {
+	color: var(--secondary-color);
+	text-shadow: 0 0 15px var(--primary-color), 0 0 5px var(--secondary-color);
+}
+#music-toggle {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	border: 2px solid white;
+	border-radius: 5px;
+	padding: 10px 15px;
+	cursor: none;
+	font-size: 0.9em;
+	transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+	z-index: 100;
+}
+#music-toggle:hover {
+	background: rgba(0, 0, 0, 0.8);
+	border-color: var(--primary-color);
+	box-shadow: 0 0 10px var(--primary-color);
+}
+.cursor-dot {
+	width: 10px;
+	height: 10px;
+	background-color: var(--primary-color);
+	border-radius: 50%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 99;
+	pointer-events: none;
+	opacity: 0.8;
+	transform: translate(-50%, -50%);
+	box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color);
+}
+@media (max-width: 600px) {
+	#main-heading {
+		font-size: 2.5em;
+		letter-spacing: 2px;
+	}
+	#title-focus-img {
+		max-width: 150px;
+		margin-bottom: 15px;
+	}
+	.image-row {
+		gap: 20px;
+	}
+	.circle-img {
+		width: 70px;
+		height: 70px;
+	}
+	.image-row > div {
+		flex: 0 0 80px;
+	}
+	.label {
+		font-size: 12px;
+	}
+	#music-toggle {
+		bottom: 10px;
+		right: 10px;
+		padding: 8px 12px;
+	}
+	html, body {
+		cursor: default;
+	}
+	.cursor-dot {
+		display: none;
+	}
+}
+</style>
 </head>
 <body>
-  <div id="site" aria-hidden="false">
-    <!-- Cursor Trail Container (Empty, dots will be added via JS) -->
-    <div id="cursor-holder"></div> 
+<div id="site" aria-hidden="false">
+	<div id="cursor-holder"></div>
 
-    <!-- Music and Background elements -->
-    <audio id="bgMusic" src="https://file.garden/aRHXz8E_TglHT95c/background.ogg" loop autoplay muted></audio>
-    <img id="loopGif" src="https://i.imgur.com/TvQmbzO.gif" alt="Aesthetic Looping Background" />
-    <div id="background-overlay"></div>
+	<audio id="bgMusic" src="https://file.garden/aRHXz8E_TglHT95c/background.ogg" loop autoplay muted></audio>
+	<img id="loopGif" src="https://i.imgur.com/TvQmbzO.gif" alt="Aesthetic Looping Background" />
+	<div id="background-overlay"></div>
 
-    <!-- Main Content -->
-    <img id="title-focus-img" src="https://i.imgur.com/cxGpLKJ.png" alt="Central Focus Image">
+	<img id="title-focus-img" src="https://i.imgur.com/cxGpLKJ.png" alt="Central Focus Image">
+	<h1 id="main-heading">Anti Revshit</h1>
+	<div class="image-container">
+		<div class="image-row">
+			<div>
+				<a href="https://discordapp.com/users/1184454687865438218" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/primo.png" class="circle-img" alt="Womy's icon">
+					<p class="label">Womy</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discordapp.com/users/1231177675649847376" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/exo.png" class="circle-img" alt="Kiyo's icon">
+					<p class="label">Kiyo</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discordapp.com/users/1167776183392403529" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/ren.png" class="circle-img" alt="Kotaro's icon">
+					<p class="label">Kotaro</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discordapp.com/users/1364746760928497697" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/resuu.png" class="circle-img" alt="Devo's icon">
+					<p class="label">Devo</p>
+				</a>
+			</div>
+		</div>
+		<div class="image-row">
+			<div>
+				<a href="https://discordapp.com/users/1391441615805091900" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/synco.png" class="circle-img" alt="Mesha's icon">
+					<p class="label">Mesha</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discordapp.com/users/1311358885315219577" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/sosa.png" class="circle-img" alt="Zh3n's icon">
+					<p class="label">Zh3n</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discordapp.com/users/659959664104046624" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/edz.png" class="circle-img" alt="Trvst's icon">
+					<p class="label">Trvst</p>
+				</a>
+			</div>
+			<div>
+				<a href="https://discord.gg/6MsB9GWJxe" target="_blank">
+					<img src="https://file.garden/aRHXz8E_TglHT95c/kyle.png" class="circle-img" alt="Rainy's icon">
+					<p class="label">Rainy</p>
+				</a>
+			</div>
+		</div>
+	</div>
+	<button id="music-toggle" aria-label="Toggle background music">🎶 Music Off</button>
+</div>
 
-    <h1 id="main-heading">Anti Revshit</h1>
+<div id="devtool-blocker">Galingan mo boi xd kaya yan.</div>
 
-    <div class="image-container">
-      <!-- Rest of your content -->
-      <div class="image-row">
-        <div>
-          <a href="https://discordapp.com/users/1184454687865438218" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/primo.png" class="circle-img" alt="Womy's icon">
-            <p class="label">Womy</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discordapp.com/users/1231177675649847376" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/exo.png" class="circle-img" alt="Kiyo's icon">
-            <p class="label">Kiyo</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discordapp.com/users/1167776183392403529" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/ren.png" class="circle-img" alt="Kotaro's icon">
-            <p class="label">Kotaro</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discordapp.com/users/1364746760928497697" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/resuu.png" class="circle-img" alt="Devo's icon">
-            <p class="label">Devo</p>
-          </a>
-        </div>
-      </div>
+<script>
+	const site = document.getElementById('site');
+	const bgMusic = document.getElementById('bgMusic');
+	const musicToggle = document.getElementById('music-toggle');
+	const cursorHolder = document.getElementById('cursor-holder');
+	const focusImage = document.getElementById('title-focus-img');
+	const blocker = document.getElementById('devtool-blocker');
+	const dotCount = 10;
+	const dots = [];
+	let isMusicPlaying = false;
 
-      <div class="image-row">
-        <div>
-          <a href="https://discordapp.com/users/1391441615805091900" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/synco.png" class="circle-img" alt="Mesha's icon">
-            <p class="label">Mesha</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discordapp.com/users/1311358885315219577" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/sosa.png" class="circle-img" alt="Zh3n's icon">
-            <p class="label">Zh3n</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discordapp.com/users/659959664104046624" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/edz.png" class="circle-img" alt="Trvst's icon">
-            <p class="label">Trvst</p>
-          </a>
-        </div>
-        <div>
-          <a href="https://discord.gg/6MsB9GWJxe" target="_blank">
-            <img src="https://file.garden/aRHXz8E_TglHT95c/kyle.png" class="circle-img" alt="Rainy's icon">
-            <p class="label">Rainy</p>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Music Control Button with Icon -->
-    <button id="music-toggle" aria-label="Toggle background music">🎶 Music Off</button>
-  </div>
+	(function() {
+		function blockScreen() {
+			blocker.style.display = 'flex';
+			console.log("Galingan mo boi xd kaya yan.");
+			setTimeout(() => {
+				blocker.style.opacity = '1';
+			}, 50); 
+		}
 
-  <script>
-    const site = document.getElementById('site');
-    const bgMusic = document.getElementById('bgMusic');
-    const musicToggle = document.getElementById('music-toggle');
-    const cursorHolder = document.getElementById('cursor-holder');
-    const focusImage = document.getElementById('title-focus-img');
-    const dotCount = 10;
-    const dots = [];
-    let isMusicPlaying = false; 
+		document.addEventListener("contextmenu", e => {
+			e.preventDefault();
+			blockScreen();
+		});
 
-    // --- Loading Transition ---
-    window.addEventListener('load', () => {
-        site.classList.add('loaded');
-    });
+		window.addEventListener("keydown", e => {
+			const ctrl = e.ctrlKey || e.metaKey;
+			const shift = e.shiftKey;
+			const key = (e.key || "").toUpperCase();
 
-    // --- Music Control Logic ---
+			if (e.key === "F12" || (ctrl && shift && ["I", "C", "J"].includes(key)) || (ctrl && key === "U")) {
+				e.preventDefault();
+				blockScreen();
+			}
+		});
+	})();
 
-    function updateMusic(play = true) {
-        if (play) {
-            bgMusic.muted = false;
-            // The browser may block play if it's not a direct user action.
-            bgMusic.play().catch(e => console.log("Failed to play music:", e));
-            musicToggle.innerHTML = '🔇 Music Off';
-            isMusicPlaying = true;
-        } else {
-            bgMusic.pause();
-            musicToggle.innerHTML = '🔊 Music On';
-            isMusicPlaying = false;
-        }
-    }
+	window.addEventListener('load', () => {
+		site.classList.add('loaded');
+	});
 
-    musicToggle.addEventListener('click', () => {
-        updateMusic(!isMusicPlaying);
-    });
+	function updateMusic(play = true) {
+		if (play) {
+			bgMusic.muted = false;
+			bgMusic.play().catch(e => console.log("Failed to play music:", e));
+			musicToggle.innerHTML = '🔇 Music Off';
+			isMusicPlaying = true;
+		} else {
+			bgMusic.pause();
+			musicToggle.innerHTML = '🔊 Music On';
+			isMusicPlaying = false;
+		}
+	}
 
-    // Handle initial interaction (required for mobile/browser autoplay policies)
-    function handleInitialInteraction() {
-        if (!isMusicPlaying) {
-            updateMusic(true);
-        }
-        document.removeEventListener('click', handleInitialInteraction);
-        document.removeEventListener('touchstart', handleInitialInteraction);
-    }
-    document.addEventListener('click', handleInitialInteraction);
-    document.addEventListener('touchstart', handleInitialInteraction);
+	musicToggle.addEventListener('click', () => {
+		updateMusic(!isMusicPlaying);
+	});
 
-    // --- Cursor Trail Logic ---
-    if (window.innerWidth >= 600) {
-        /** Initial setup of cursor dots */
-        for (let i = 0; i < dotCount; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'cursor-dot';
-            cursorHolder.appendChild(dot);
-            dots.push({
-                element: dot,
-                x: 0,
-                y: 0,
-                targetX: 0,
-                targetY: 0,
-                size: 10 * (1 - i / dotCount), 
-                delay: i * 0.03 
-            });
-            dot.style.width = dot.style.height = `${dots[i].size}px`;
-        }
+	function handleInitialInteraction() {
+		if (!isMusicPlaying) {
+			updateMusic(true);
+		}
+		document.removeEventListener('click', handleInitialInteraction);
+		document.removeEventListener('touchstart', handleInitialInteraction);
+	}
 
-        /** Update dot positions on mouse move */
-        let mouseX = 0, mouseY = 0;
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+	document.addEventListener('click', handleInitialInteraction);
+	document.addEventListener('touchstart', handleInitialInteraction);
 
-            // Image 3D Tilt Effect
-            const rect = focusImage.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            // Calculate tilt based on mouse position relative to image center
-            const sensitivity = 10; // Controls how much the image tilts
-            const rotX = (mouseY - centerY) / centerY * -1 * sensitivity;
-            const rotY = (mouseX - centerX) / centerX * sensitivity;
-            
-            focusImage.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.0)`;
-        });
-        
-        // Reset tilt on mouse leave
-        focusImage.addEventListener('mouseleave', () => {
-            focusImage.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.0)';
-        });
+	if (window.innerWidth >= 600) {
+		for (let i = 0; i < dotCount; i++) {
+			const dot = document.createElement('div');
+			dot.className = 'cursor-dot';
+			cursorHolder.appendChild(dot);
+			dots.push({
+				element: dot,
+				x: 0,
+				y: 0,
+				targetX: 0,
+				targetY: 0,
+				size: 10 * (1 - i / dotCount),
+				delay: i * 0.03
+			});
+			dot.style.width = `${dots[i].size}px`;
+			dot.style.height = `${dots[i].size}px`;
+		}
 
+		let mouseX = 0,
+			mouseY = 0;
+		document.addEventListener('mousemove', (e) => {
+			mouseX = e.clientX;
+			mouseY = e.clientY;
 
-        /** Animation loop for smooth trailing effect */
-        function animateDots() {
-            dots[0].targetX = mouseX;
-            dots[0].targetY = mouseY;
-            
-            for (let i = 0; i < dotCount; i++) {
-                const dot = dots[i];
+			const rect = focusImage.getBoundingClientRect();
+			const centerX = rect.left + rect.width / 2;
+			const centerY = rect.top + rect.height / 2;
 
-                if (i > 0) {
-                    dot.targetX = dots[i-1].x;
-                    dot.targetY = dots[i-1].y;
-                }
+			const sensitivity = 10;
+			const rotX = (mouseY - centerY) / centerY * -1 * sensitivity;
+			const rotY = (mouseX - centerX) / centerX * sensitivity;
 
-                dot.x += (dot.targetX - dot.x) * (0.2 - dot.delay);
-                dot.y += (dot.targetY - dot.y) * (0.2 - dot.delay);
+			focusImage.style.transform = `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.0)`;
+		});
 
-                dot.element.style.transform = `translate(${dot.x}px, ${dot.y}px) scale(${1 - i / (dotCount * 2)})`;
-            }
+		focusImage.addEventListener('mouseleave', () => {
+			focusImage.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.0)';
+		});
 
-            requestAnimationFrame(animateDots);
-        }
-        
-        animateDots();
-    } 
-    // On mobile screens, custom cursor is already disabled in CSS.
-  </script>
+		function animateDots() {
+			dots[0].targetX = mouseX;
+			dots[0].targetY = mouseY;
+			for (let i = 0; i < dotCount; i++) {
+				const dot = dots[i];
+				if (i > 0) {
+					dot.targetX = dots[i - 1].x;
+					dot.targetY = dots[i - 1].y;
+				}
+				dot.x += (dot.targetX - dot.x) * (0.2 - dot.delay);
+				dot.y += (dot.targetY - dot.y) * (0.2 - dot.delay);
+				dot.element.style.transform = `translate(${dot.x}px, ${dot.y}px) scale(${1 - i / (dotCount * 2)})`;
+			}
+			requestAnimationFrame(animateDots);
+		}
+		animateDots();
+	}
+
+</script>
 </body>
 </html>
