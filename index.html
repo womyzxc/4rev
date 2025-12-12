@@ -81,22 +81,15 @@ a:focus, button:focus {
 	justify-content: center;
 	align-items: center;
 	font-size: 2em;
-	color: var(--primary-color);
+	color: var(--secondary-color); /* Updated to make the text visible */
 	padding: 20px;
 	text-align: center;
 	opacity: 0.8;
 	transition: opacity 0.5s ease-out;
-	animation: blinkText 1.5s step-end infinite alternate;
 }
-@keyframes blinkText {
-	from {
-		opacity: 1;
-		letter-spacing: normal;
-	}
-	to {
-		opacity: 0.9;
-		letter-spacing: 2px;
-	}
+#devtool-blocker p {
+	color: white;
+	font-size: 1.5em;
 }
 
 #title-focus-img {
@@ -117,32 +110,6 @@ a:focus, button:focus {
 	text-shadow: 0 0 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.5);
 	margin-bottom: 50px;
 	letter-spacing: 5px;
-	animation: neonGlow 2s ease-in-out infinite alternate, colorCycle 8s linear infinite;
-}
-@keyframes neonGlow {
-	from {
-		text-shadow: 0 0 5px var(--secondary-color), 0 0 10px var(--secondary-color), 0 0 20px var(--primary-color);
-	}
-	to {
-		text-shadow: 0 0 10px var(--secondary-color), 0 0 25px var(--primary-color), 0 0 40px var(--primary-color);
-	}
-}
-@keyframes colorCycle {
-	0% {
-		color: var(--primary-color);
-	}
-	25% {
-		color: #f0f;
-	}
-	50% {
-		color: #0ff;
-	}
-	75% {
-		color: #ff0;
-	}
-	100% {
-		color: var(--primary-color);
-	}
 }
 
 .image-container {
@@ -186,7 +153,7 @@ a:focus, button:focus {
 	box-shadow: 0 0 20px var(--primary-color), inset 0 0 8px #eee;
 	transform: scale(1.1);
 }
-/* Labels */
+
 .label {
 	color: #ccc;
 	font-size: 14px;
@@ -336,7 +303,9 @@ a:focus, button:focus {
 	<button id="music-toggle" aria-label="Toggle background music">🎶 Music Off</button>
 </div>
 
-<div id="devtool-blocker">Galingan mo boi xd kaya yan.</div>
+<div id="devtool-blocker">
+	<p>Kaya yan boi galingan mo lang xd.</p>
+</div>
 
 <script>
 	const site = document.getElementById('site');
@@ -352,7 +321,7 @@ a:focus, button:focus {
 	(function() {
 		function blockScreen() {
 			blocker.style.display = 'flex';
-			console.log("Galingan mo boi xd kaya yan.");
+			console.log("Please refrain from using developer tools.");
 			setTimeout(() => {
 				blocker.style.opacity = '1';
 			}, 50); 
@@ -463,7 +432,6 @@ a:focus, button:focus {
 		}
 		animateDots();
 	}
-
 </script>
 </body>
 </html>
