@@ -1,278 +1,387 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>@shmurda | womy</title>
   <style>
-
+    :root{
+      --main-color: #c084fc;
+      --card-bg: rgba(10,10,10,0.85);
+      --glass-blur: 5px;
+    }
     @keyframes glow {
-        0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
-        50% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), 0 0 10px rgba(255, 0, 0, 0.5); }
-        100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
-    }
-    
-    .volume-control-wrapper {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 100;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background: rgba(10, 10, 10, 0.85);
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        0% { box-shadow: 0 0 12px rgba(255,0,0,0.35), 0 0 6px rgba(255,0,0,0.18); }
+        100% { box-shadow: 0 0 26px rgba(255,0,0,0.7), 0 0 10px rgba(255,0,0,0.35); }
     }
 
-    #volume-slider {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 100px;
-        height: 8px;
-        background: #555;
-        border-radius: 4px;
-        outline: none;
-        opacity: 0.7;
-        transition: opacity .2s;
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#000;
+      color:var(--main-color);
+      font-family:Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      animation:fadeIn .6s ease;
     }
-
-    #volume-slider:hover {
-        opacity: 1;
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .background-container{position:fixed;inset:0;z-index:-2;overflow:hidden}
+    /* Replace the imgur url with a direct image link like https://i.imgur.com/XXXXX.jpg */
+    .image-background{position:absolute;inset:0;background: url('https://i.imgur.com/placeholder.jpg') center/cover no-repeat;filter:blur(4px) brightness(.45)}
+    #video-background{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;mix-blend-mode:normal}
+    .video-overlay{position:fixed;inset:0;background: rgba(0,0,0,0.35);z-index:-1}
+    .card{
+      width: min(92%, 420px);
+      padding: 28px;
+      border-radius: 18px;
+      background: var(--card-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      text-align:center;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      animation: glow 2.2s infinite alternate;
+      z-index:10;
     }
-
-    #volume-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #fff;
-        cursor: pointer;
+    .pfp{width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;border:3px solid rgba(255,255,255,0.06)}
+    .username{font-size:20px;padding:8px 12px;border-radius:10px;background:#0b0b0b;margin-top:8px;color:inherit}
+    .status{margin-top:16px;font-size:14px;opacity:.9;color:inherit}
+    .status strong{color:#e9e5ff}
+    .icons{display:flex;justify-content:center;gap:12px;margin:18px 0}
+    .icons img{width:40px;height:40px;cursor:pointer;transition:transform .18s,filter .25s;filter:drop-shadow(0 0 6px rgba(255,255,255,0.45))}
+    .icons img:hover{transform:scale(1.18);filter:drop-shadow(0 0 14px rgba(200,100,255,0.25))}
+    .emoji-bar{display:flex;justify-content:center;gap:10px;margin-top:12px;font-size:22px}
+    .views{margin-top:18px;opacity:.75;font-size:14px}
+    .volume-control-wrapper{
+      position:fixed;bottom:20px;right:20px;z-index:100;display:flex;align-items:center;gap:8px;
+      padding:8px 12px;background:rgba(10,10,10,0.85);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,0.45)
     }
-
-    #volume-slider::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #fff;
-        cursor: pointer;
-    }
-
-    body {
-        margin: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, sans-serif;
-        background-color: #000;
-        color: #c084fc; 
-    }
-
-    .background-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-    }
-
-    .image-background {
-      width: 100%;
-      height: 100%;
-      background: url('https://imgur.com/a/P8wj4vE') no-repeat center center/cover;
-    }
-
-    #video-background {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-
-    .video-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: -1;
-    }
-
-    .card {
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(5px);
-      width: 380px;
-      padding: 30px;
-      border-radius: 25px;
-      text-align: center;
-      z-index: 10;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-      animation: glow 2s infinite alternate;
-    }
-
-    .pfp {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 15px;
-    }
-
-    .icons {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0;
-    }
-    .icons img {
-      filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      transition: transform .2s, filter .25s;
-    }
-    .icons img:hover {
-      transform: scale(1.15);
-    }
-
-    .username {
-      font-size: 20px;
-      padding: 10px 0;
-      border-radius: 12px;
-      background: #111;
-      margin-top: 10px; 
-      color: inherit; 
-    }
-
-    .status {
-      margin-top: 20px;
-      font-size: 14px;
-      opacity: 0.8;
-      color: inherit;
-    }
-    .status strong {
-      color: #e9e5ff; 
-    }
-
-    .views {
-      margin-top: 25px;
-      opacity: 0.7;
-      font-size: 14px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      color: inherit;
-    }
-    .emoji-bar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px; 
-      font-size: 22px;
-      color: inherit;
-    }
-    #activity-text {
-        display: inline-block;
-        border-right: 2px solid #c084fc; 
-        padding-right: 4px;
-        min-width: 150px;
+    #volume-slider{appearance:none;width:100px;height:8px;background:#555;border-radius:6px;outline:none;opacity:.85;transition:opacity .18s}
+    #volume-slider:hover{opacity:1}
+    #volume-slider::-webkit-slider-thumb{appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;cursor:pointer}
+    #activity-text{display:inline-block;border-right:2px solid var(--main-color);padding-right:6px;min-width:150px}
+    /* small screens adjustments */
+    @media (max-width:420px){
+      .pfp{width:96px;height:96px}
+      .card{padding:20px;border-radius:14px}
     }
   </style>
 </head>
 <body>
-
-<div class="background-container">
-  <div class="image-background"></div>
-  <video autoplay muted loop id="video-background" preload="auto">
-    <source src="revrev.mp4" type="video/mp4">
-  </video>
-</div>
-
-<div class="video-overlay"></div>
-<audio id="background-music" src="revrev.mp3" autoplay loop preload="auto"></audio>
-<div class="volume-control-wrapper">
-  <span>🔊</span>
-  <input type="range" id="volume-slider" min="0" max="100" value="50">
-</div>
-
-<div class="card">
-  <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="pfp" id="profile-picture" alt="Profile Picture" />
-  <div class="username" id="discord-username">Loading...</div>
-  <div class="emoji-bar" id="emoji-bar">
-    <span>🌿</span>
-    <span>✨</span>
-    <span>💎</span>
+  <div class="background-container">
+    <div class="image-background" aria-hidden="true"></div>
+    <!-- If you use a video, keep it muted & playsinline for autoplay reliability -->
+    <video id="video-background" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+      <source src="revrev.mp4" type="video/mp4">
+    </video>
   </div>
 
-  <div class="status">
-    <strong id="discord-status">Checking Status...</strong><br>
-    <span id="activity-text"></span>
+  <div class="video-overlay" aria-hidden="true"></div>
+
+  <audio id="background-music" src="revrev.mp3" autoplay loop playsinline preload="auto"></audio>
+  <div class="volume-control-wrapper" aria-label="Volume control">
+    <span>🔊</span>
+    <input id="volume-slider" type="range" min="0" max="100" value="50" />
   </div>
 
-  <div class="icons">
-    <a href="https://discord.com/users/1184454687865438218" target="_blank"><img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" /></a>
-    <a href="https://www.instagram.com/womy.zxc/" target="_blank"><img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" /></a>
-    <a href="https://www.youtube.com/@womyxyz" target="_blank"><img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" /></a>
-    <a href="https://github.com/womyzxc" target="_blank"><img src="https://cdn.simpleicons.org/github/ffffff" alt="Github" /></a>
-  </div>
+  <div class="card" role="region" aria-label="Profile card">
+    <img id="profile-picture" class="pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Profile picture" />
+    <div id="discord-username" class="username">Loading...</div>
 
-  <div class="views">👁 Antirevshit</div>
-</div>
+    <div class="emoji-bar" id="emoji-bar">
+      <span>🌿</span><span>✨</span><span>💎</span>
+    </div>
+
+    <div class="status">
+      <strong id="discord-status">Checking Status...</strong><br />
+      <span id="activity-text"></span>
+    </div>
+
+    <div class="icons" aria-hidden="false">
+      <a href="https://discord.com/users/1184454687865438218" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" /></a>
+      <a href="https://www.instagram.com/womy.zxc/" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" /></a>
+      <a href="https://www.youtube.com/@womyxyz" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" /></a>
+      <a href="https://github.com/womyzxc" target="_blank" rel="noopener noreferrer"><img src="https://cdn.simpleicons.org/github/ffffff" alt="Github" /></a>
+    </div>
+
+    <div class="views">👁 Antirevshit</div>
+  </div>
 
 <script>
+/* ---------- Basic site behavior & Lanyard integration ---------- */
 const DISCORD_USER_ID = '1184454687865438218';
 const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+
 const musicElement = document.getElementById('background-music');
 const volumeSlider = document.getElementById('volume-slider');
+const pfpElement = document.getElementById('profile-picture');
+const usernameElement = document.getElementById('discord-username');
+const statusElement = document.getElementById('discord-status');
+const activityElement = document.getElementById('activity-text');
 
-function enableAudio(){if(musicElement.paused){musicElement.volume=volumeSlider.value/100;musicElement.play().catch(e=>console.log(e));}}
-function setupVolumeControl(){musicElement.volume=volumeSlider.value/100;volumeSlider.addEventListener('input',()=>{musicElement.volume=volumeSlider.value/100;});}
-document.body.addEventListener('click',enableAudio,{once:true});setupVolumeControl();
-
-const pfpElement=document.getElementById('profile-picture');
-const usernameElement=document.getElementById('discord-username');
-const statusElement=document.getElementById('discord-status');
-const activityElement=document.getElementById('activity-text');
-
-const fallbackText="Hack the Future, One Bit at a Time";
-let charIndex=0,isDeleting=false,typingSpeed=80,pauseTime=1600,typingInterval=null,isTypingActive=false;
-
-function typeEffect(){if(isTypingActive)return;activityElement.textContent="";charIndex=0;isDeleting=false;isTypingActive=true;typingInterval=setInterval(()=>{if(!isDeleting){activityElement.textContent=fallbackText.substring(0,charIndex+1);charIndex++;if(charIndex>fallbackText.length){isDeleting=true;setTimeout(()=>{if(isTypingActive)isDeleting=true;},pauseTime);charIndex=fallbackText.length;}}else{activityElement.textContent=fallbackText.substring(0,charIndex-1);charIndex--;if(charIndex<=0){isDeleting=false;charIndex=0;setTimeout(()=>{if(isTypingActive)isDeleting=false;},typingSpeed);}}},typingSpeed);}
-function stopTypingEffect(){if(typingInterval!==null){clearInterval(typingInterval);typingInterval=null;}isTypingActive=false;charIndex=0;isDeleting=false;}
-
-function displayLanyardData(data){const profileData=data.data;if(!profileData){statusElement.textContent="Offline/API Error";activityElement.textContent="Could not fetch status.";stopTypingEffect();return;}const username=profileData.discord_user.global_name||profileData.discord_user.username;usernameElement.textContent=username;const userId=profileData.discord_user.id;const avatarHash=profileData.discord_user.avatar;if(avatarHash){const ext=avatarHash.startsWith('a_')?'gif':'webp';pfpElement.src=`https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=128`;}else{const discriminator=parseInt(profileData.discord_user.discriminator)%5;pfpElement.src=`https://cdn.discordapp.com/embed/avatars/${discriminator}.png`;}const discordStatus=profileData.discord_status;let statusText='';if(discordStatus==='online'){statusText='Online';}else if(discordStatus==='idle'){statusText='Idle';}else if(discordStatus==='dnd'){statusText='Do Not Disturb';}else{statusText='Offline';}statusElement.textContent=statusText;if(!isTypingActive){typeEffect();}}
-async function fetchLanyardData(){try{const response=await fetch(LANYARD_API);if(!response.ok){throw new Error(`HTTP error! status: ${response.status}`);}const data=await response.json();displayLanyardData(data);}catch(error){statusElement.textContent="API Error";activityElement.textContent="Check console for details.";stopTypingEffect();}}
-fetchLanyardData();setInterval(fetchLanyardData,30000);
-
-// ===== Extra Functions =====
-
-// Ultra-smooth tab title scroll
-const fullText="@shmurda | womy";
-let position=0;
-function ultraSmoothTabScroll(){
-    document.title=fullText.slice(position)+fullText.slice(0,position);
-    position=(position+1)%fullText.length;
-}
-setInterval(ultraSmoothTabScroll,150);
-
-// Disable right-click and inspect
-document.addEventListener('contextmenu',event=>event.preventDefault());
-document.addEventListener('keydown',function(event){
-    if(event.key==="F12"||(event.ctrlKey&&event.shiftKey&&(event.key==="I"||event.key==="C"))||(event.ctrlKey&&event.key==="U")){
-        event.preventDefault();
-        alert("nice fucking try bitch");
-    }
+/* Volume persistence */
+const storedVol = localStorage.getItem('revrev_vol');
+if (storedVol !== null) volumeSlider.value = storedVol;
+musicElement.volume = volumeSlider.value / 100;
+volumeSlider.addEventListener('input', () => {
+  musicElement.volume = volumeSlider.value / 100;
+  localStorage.setItem('revrev_vol', volumeSlider.value);
 });
+
+/* enable audio after user interaction for autoplay policies */
+function enableAudio() {
+  if (musicElement.paused) {
+    musicElement.volume = volumeSlider.value / 100;
+    musicElement.play().catch(()=>{});
+  }
+}
+document.body.addEventListener('click', enableAudio, { once: true });
+
+/* Typing fallback text */
+const fallbackText = "Hack the Future, One Bit at a Time";
+let typeTimer = null;
+function startTyping(text = fallbackText, speed = 80, pause = 1400) {
+  clearInterval(typeTimer);
+  activityElement.textContent = "";
+  let i = 0, deleting = false;
+  typeTimer = setInterval(() => {
+    if (!deleting) {
+      activityElement.textContent = text.substring(0, ++i);
+      if (i >= text.length) {
+        deleting = true;
+        setTimeout(()=>{}, pause);
+      }
+    } else {
+      activityElement.textContent = text.substring(0, --i);
+      if (i <= 0) {
+        deleting = false;
+      }
+    }
+  }, speed);
+}
+function stopTyping() { clearInterval(typeTimer); }
+
+/* Lanyard fetch */
+async function displayLanyardData(data){
+  if(!data || !data.data) {
+    statusElement.textContent = "Offline/API Error";
+    activityElement.textContent = "Could not fetch status.";
+    stopTyping();
+    return;
+  }
+  const profile = data.data;
+  const user = profile.discord_user || {};
+  const name = user.global_name || user.username || "Unknown";
+  usernameElement.textContent = name;
+  const avatarHash = user.avatar;
+  const id = user.id;
+  if (avatarHash) {
+    const ext = avatarHash.startsWith("a_") ? "gif" : "png";
+    pfpElement.src = `https://cdn.discordapp.com/avatars/${id}/${avatarHash}.${ext}?size=256`;
+  } else {
+    const discr = parseInt(user.discriminator || "0") % 5;
+    pfpElement.src = `https://cdn.discordapp.com/embed/avatars/${discr}.png`;
+  }
+  const discordStatus = profile.discord_status || "offline";
+  const map = { online: "Online", idle: "Idle", dnd: "Do Not Disturb", offline: "Offline" };
+  statusElement.textContent = map[discordStatus] || "Offline";
+  if (profile.secrets && profile.secrets.spotify) {
+    // example: display activity
+  }
+  stopTyping();
+  startTyping();
+}
+
+async function fetchLanyardData(){
+  startTyping();
+  try {
+    const res = await fetch(LANYARD_API);
+    if (!res.ok) throw new Error(`Status ${res.status}`);
+    const json = await res.json();
+    displayLanyardData(json);
+  } catch (err) {
+    statusElement.textContent = "API Error";
+    activityElement.textContent = "Check console for details.";
+    stopTyping();
+    console.error("Lanyard fetch failed:", err);
+  }
+}
+fetchLanyardData();
+setInterval(fetchLanyardData, 30000);
+
+/* ultra-smooth tab scroll title */
+const fullText = "@shmurda | womy";
+let pos = 0;
+setInterval(() => {
+  document.title = fullText.slice(pos) + fullText.slice(0,pos);
+  pos = (pos + 1) % fullText.length;
+}, 150);
+
+/* don't disable right-click/inspect aggressively here — anti-inspect handles it */
+
 </script>
+
+<!-- ========== STRONG ANTI-INSPECT SCRIPT ========== -->
+<script>
+/* Defensive script: multiple heuristics, overlays instead of direct redirect.
+   NOTE: This is a deterrent for casual inspection only. */
+(function () {
+  const CHECK_INTERVAL = 800;
+  const PAUSE_THRESHOLD = 200;
+  const SIZE_THRESHOLD = 160;
+  const AUTO_REDIRECT = false;
+  const REDIRECT_URL = "about:blank";
+
+  function takeAction(reason){
+    console.warn("DevTools detection:", reason);
+    if (!document.getElementById("antiInspectOverlay")) {
+      const o = document.createElement("div");
+      o.id = "antiInspectOverlay";
+      Object.assign(o.style, {
+        position: "fixed",
+        inset: "0",
+        zIndex: "9999999",
+        background: "linear-gradient(180deg, rgba(0,0,0,0.97), rgba(30,0,0,0.97))",
+        color: "#fff",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "24px",
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
+      });
+      o.innerHTML = `<div>
+        <h1 style="margin:0 0 12px;font-size:20px">Developer tools detected</h1>
+        <p style="margin:0 0 8px;opacity:0.9">This page is protected. Nice Try kiddos xd</code> Find another way xd.</p>
+        <small style="opacity:0.7">Reason: ${String(reason)}</small>
+      </div>`;
+      document.documentElement.appendChild(o);
+    }
+    if (AUTO_REDIRECT) {
+      setTimeout(()=>{ window.location.href = REDIRECT_URL; }, 350);
+    }
+  }
+
+  /* keybind blocking */
+  window.addEventListener("keydown", function (e) {
+    const ctrl = e.ctrlKey || e.metaKey;
+    const shift = e.shiftKey;
+    const k = (e.key || "").toUpperCase();
+    if (e.key === "F12" || (ctrl && shift && ["I","C","J"].includes(k)) || (ctrl && k === "U")) {
+      e.preventDefault(); e.stopPropagation();
+      takeAction("Blocked keybind: " + e.key);
+      return false;
+    }
+  }, true);
+
+  /* console probe */
+  let devtoolsFlag = false;
+  function consoleProbe(){
+function betterConsoleProbe() {
+  const threshold = 160; // detection threshold
+  const widthDiff = window.outerWidth - window.innerWidth;
+  const heightDiff = window.outerHeight - window.innerHeight;
+  if (widthDiff > threshold || heightDiff > threshold) {
+    devtoolsFlag = true;
+  }
+}
+
+  }
+
+  function sizeHeuristic(){
+    try{
+      const wd = Math.abs(window.outerWidth - window.innerWidth);
+      const ht = Math.abs(window.outerHeight - window.innerHeight);
+      if (wd > SIZE_THRESHOLD || ht > SIZE_THRESHOLD) return `sizeDiff w:${wd} h:${ht}`;
+    } catch(e){}
+    return false;
+  }
+
+  let last = performance.now();
+  function pauseCheck(){
+    const now = performance.now();
+    const d = now - last;
+    last = now;
+    if (d > CHECK_INTERVAL + PAUSE_THRESHOLD) return `pause:${Math.round(d)}ms`;
+    return false;
+  }
+
+  let debuggerTriggered = false;
+  function tryDebuggerProbe(){
+    try{
+      const start = performance.now();
+      (function(){ debugger; })();
+      const dur = performance.now() - start;
+      if (dur > 50) debuggerTriggered = true;
+    } catch(e){}
+  }
+
+  (function patchConsole(){
+    const methods = ["log","info","warn","error","debug"];
+    methods.forEach(m=>{
+      const orig = console[m];
+      console[m] = function(...args){
+        try{ consoleProbe(); } catch(e){}
+        return orig.apply(console, args);
+      };
+    });
+  })();
+
+  const checks = [
+    ()=>{ consoleProbe(); if (devtoolsFlag) return "consoleProbe"; return false; },
+    ()=> sizeHeuristic(),
+    ()=> pauseCheck(),
+    ()=> (debuggerTriggered ? "debuggerTriggered" : false),
+    ()=> { tryDebuggerProbe(); return debuggerTriggered ? "debuggerPause" : false; }
+  ];
+
+  setInterval(()=>{
+    for (const chk of checks){
+      try{
+        const res = chk();
+        if (res){ takeAction(res); return; }
+      } catch(e){}
+    }
+  }, CHECK_INTERVAL);
+
+  /* DOM mutation heuristic */
+  try{
+    const obs = new MutationObserver(muts=>{
+      for (const m of muts){
+        if (m.addedNodes && m.addedNodes.length){
+          for (const n of m.addedNodes){
+            if (n && n.nodeType === 1){
+              const id = (n.id || "").toLowerCase();
+              if (id.includes("devtools") || id.includes("inspector")){
+                takeAction("devtools DOM injection");
+                return;
+              }
+            }
+          }
+        }
+      }
+    });
+    obs.observe(document.documentElement, { childList:true, subtree:true });
+  } catch(e){}
+
+  const antiOverlayKeeper = setInterval(()=>{
+    const o = document.getElementById("antiInspectOverlay");
+    if (o && !document.body.contains(o)) document.documentElement.appendChild(o);
+  }, 1000);
+
+  window.__ANTI_INSPECT_DISABLE = function(secret){
+    if (secret === true){
+      clearInterval(antiOverlayKeeper);
+      const o = document.getElementById("antiInspectOverlay");
+      if (o) o.remove();
+      return true;
+    }
+    return false;
+  };
+})();
+</script>
+
 </body>
 </html>
