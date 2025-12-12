@@ -299,14 +299,22 @@ function betterConsoleProbe() {
     return false;
   }
 
-  let last = performance.now();
-  function pauseCheck(){
-    const now = performance.now();
-    const d = now - last;
-    last = now;
-    if (d > CHECK_INTERVAL + PAUSE_THRESHOLD) return `pause:${Math.round(d)}ms`;
-    return false;
+let last = performance.now();
+function pauseCheck(){
+  const now = performance.now();
+  const d = now - last;
+  last = now;
+  
+  if (d > CHECK_INTERVAL + PAUSE_THRESHOLD) {
+    if (d < 2000) {  
+      return false;  
+    }
+    return `pause:${Math.round(d)}ms`;
   }
+  return false;
+}
+
+
 
   let debuggerTriggered = false;
   function tryDebuggerProbe(){
