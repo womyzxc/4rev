@@ -6,14 +6,12 @@
   <title>@shmurda | womy</title>
   <style>
 
-
     @keyframes glow {
         0% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
         50% { box-shadow: 0 0 25px rgba(255, 0, 0, 0.8), 0 0 10px rgba(255, 0, 0, 0.5); }
         100% { box-shadow: 0 0 15px rgba(255, 0, 0, 0.4), 0 0 5px rgba(255, 0, 0, 0.2); }
     }
     
- 
     .volume-control-wrapper {
         position: fixed;
         bottom: 20px;
@@ -44,7 +42,6 @@
         opacity: 1;
     }
 
-
     #volume-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -63,8 +60,6 @@
         cursor: pointer;
     }
 
-
-
     body {
         margin: 0;
         height: 100vh;
@@ -75,7 +70,6 @@
         align-items: center;
         font-family: Arial, sans-serif;
         background-color: #000;
-
         color: #c084fc; 
     }
 
@@ -91,7 +85,7 @@
     .image-background {
       width: 100%;
       height: 100%;
-      background: url('https://media.discordapp.net/attachments/1438416051644661852/1448645036903370963/videoframe_19339.png?ex=693c0353&is=693ab1d3&hm=8680463a170fd916b15cdb1452c7d201f53c64d3f503204ba6bce3bcd4164134&&format=webp&quality=lossless&width=1920&height=1080') no-repeat center center/cover;
+      background: url('https://imgur.com/a/P8wj4vE') no-repeat center center/cover;
     }
 
     #video-background {
@@ -112,9 +106,7 @@
       background: rgba(0, 0, 0, 0.4);
       z-index: -1;
     }
-    
 
-    
     .card {
       background: rgba(10, 10, 10, 0.85);
       backdrop-filter: blur(5px);
@@ -126,7 +118,7 @@
       box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
       animation: glow 2s infinite alternate;
     }
-    
+
     .pfp {
       width: 120px;
       height: 120px;
@@ -134,6 +126,7 @@
       object-fit: cover;
       margin-bottom: 15px;
     }
+
     .icons {
       display: flex;
       justify-content: center;
@@ -141,16 +134,15 @@
       margin: 20px 0;
     }
     .icons img {
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
       width: 40px;
       height: 40px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: transform .2s, filter .25s;
     }
-
     .icons img:hover {
       transform: scale(1.15);
     }
-
 
     .username {
       font-size: 20px;
@@ -167,7 +159,6 @@
       opacity: 0.8;
       color: inherit;
     }
-    
     .status strong {
       color: #e9e5ff; 
     }
@@ -200,229 +191,88 @@
 </head>
 <body>
 
+<div class="background-container">
+  <div class="image-background"></div>
+  <video autoplay muted loop id="video-background" preload="auto">
+    <source src="revrev.mp4" type="video/mp4">
+  </video>
+</div>
 
-  <div class="background-container">
-    
-    <div class="image-background"></div>
-    
-    <video autoplay muted loop id="video-background" preload="auto">
-      <source src="revrev.mp4" type="video/mp4"> 
-      Your browser does not support the video tag.
-    </video>
+<div class="video-overlay"></div>
+<audio id="background-music" src="revrev.mp3" autoplay loop preload="auto"></audio>
+<div class="volume-control-wrapper">
+  <span>🔊</span>
+  <input type="range" id="volume-slider" min="0" max="100" value="50">
+</div>
 
-  </div>
-  
-  <div class="video-overlay"></div>
-  
-
-  <audio id="background-music" src="revrev.mp3" autoplay loop preload="auto"></audio>
-
-  <div class="volume-control-wrapper">
-    <span>🔊</span> 
-    <input type="range" id="volume-slider" min="0" max="100" value="50">
-  </div>
-
-
-
-  <div class="card">
-    <img 
-      src="https://cdn.discordapp.com/embed/avatars/0.png" 
-      class="pfp" 
-      id="profile-picture" 
-      alt="Profile Picture" 
-    />
-
-    <div class="username" id="discord-username">Loading...</div>
-    <div class="emoji-bar" id="emoji-bar">
-      <span>🌿</span>
-      <span>✨</span>
-      <span>💎</span>
-    </div>
-
-
-    <div class="status">
-      <strong id="discord-status">Checking Status...</strong><br>
-      <span id="activity-text"></span>
-    </div>
-
-    <div class="icons">
-      <a href="https://discord.com/users/1184454687865438218" target="_blank">
-        <img src="discord.png" alt="Discord" />
-      </a>
-      <a href="https://www.instagram.com/womy.zxc/" target="_blank">
-        <img src="ig.png" alt="Instagram" />
-      </a>
-      <a href="https://www.youtube.com/@womyxyz" target="_blank">
-        <img src="yt.png" alt="YouTube" />
-      </a>
-      <a href="https://github.com/womyzxc" target="_blank">
-        <img src="tg.png" alt="Github" />
-      </a>
-    </div>
-
-    <div class="views">👁 Antirevshit</div>
+<div class="card">
+  <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="pfp" id="profile-picture" alt="Profile Picture" />
+  <div class="username" id="discord-username">Loading...</div>
+  <div class="emoji-bar" id="emoji-bar">
+    <span>🌿</span>
+    <span>✨</span>
+    <span>💎</span>
   </div>
 
-  <script>
+  <div class="status">
+    <strong id="discord-status">Checking Status...</strong><br>
+    <span id="activity-text"></span>
+  </div>
 
-    const DISCORD_USER_ID = '1184454687865438218';
-    const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
-    const musicElement = document.getElementById('background-music');
-    const volumeSlider = document.getElementById('volume-slider');
-    
+  <div class="icons">
+    <a href="https://discord.com/users/1184454687865438218" target="_blank"><img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" /></a>
+    <a href="https://www.instagram.com/womy.zxc/" target="_blank"><img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" /></a>
+    <a href="https://www.youtube.com/@womyxyz" target="_blank"><img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" /></a>
+    <a href="https://github.com/womyzxc" target="_blank"><img src="https://cdn.simpleicons.org/github/ffffff" alt="Github" /></a>
+  </div>
 
-    
-    function enableAudio() {
-        if (musicElement.paused) {
-            musicElement.volume = volumeSlider.value / 100;
-            musicElement.play().catch(error => {
-                console.log("Audio play blocked by browser:", error);
-            });
-        }
+  <div class="views">👁 Antirevshit</div>
+</div>
+
+<script>
+const DISCORD_USER_ID = '1184454687865438218';
+const LANYARD_API = `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`;
+const musicElement = document.getElementById('background-music');
+const volumeSlider = document.getElementById('volume-slider');
+
+function enableAudio(){if(musicElement.paused){musicElement.volume=volumeSlider.value/100;musicElement.play().catch(e=>console.log(e));}}
+function setupVolumeControl(){musicElement.volume=volumeSlider.value/100;volumeSlider.addEventListener('input',()=>{musicElement.volume=volumeSlider.value/100;});}
+document.body.addEventListener('click',enableAudio,{once:true});setupVolumeControl();
+
+const pfpElement=document.getElementById('profile-picture');
+const usernameElement=document.getElementById('discord-username');
+const statusElement=document.getElementById('discord-status');
+const activityElement=document.getElementById('activity-text');
+
+const fallbackText="Hack the Future, One Bit at a Time";
+let charIndex=0,isDeleting=false,typingSpeed=80,pauseTime=1600,typingInterval=null,isTypingActive=false;
+
+function typeEffect(){if(isTypingActive)return;activityElement.textContent="";charIndex=0;isDeleting=false;isTypingActive=true;typingInterval=setInterval(()=>{if(!isDeleting){activityElement.textContent=fallbackText.substring(0,charIndex+1);charIndex++;if(charIndex>fallbackText.length){isDeleting=true;setTimeout(()=>{if(isTypingActive)isDeleting=true;},pauseTime);charIndex=fallbackText.length;}}else{activityElement.textContent=fallbackText.substring(0,charIndex-1);charIndex--;if(charIndex<=0){isDeleting=false;charIndex=0;setTimeout(()=>{if(isTypingActive)isDeleting=false;},typingSpeed);}}},typingSpeed);}
+function stopTypingEffect(){if(typingInterval!==null){clearInterval(typingInterval);typingInterval=null;}isTypingActive=false;charIndex=0;isDeleting=false;}
+
+function displayLanyardData(data){const profileData=data.data;if(!profileData){statusElement.textContent="Offline/API Error";activityElement.textContent="Could not fetch status.";stopTypingEffect();return;}const username=profileData.discord_user.global_name||profileData.discord_user.username;usernameElement.textContent=username;const userId=profileData.discord_user.id;const avatarHash=profileData.discord_user.avatar;if(avatarHash){const ext=avatarHash.startsWith('a_')?'gif':'webp';pfpElement.src=`https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=128`;}else{const discriminator=parseInt(profileData.discord_user.discriminator)%5;pfpElement.src=`https://cdn.discordapp.com/embed/avatars/${discriminator}.png`;}const discordStatus=profileData.discord_status;let statusText='';if(discordStatus==='online'){statusText='Online';}else if(discordStatus==='idle'){statusText='Idle';}else if(discordStatus==='dnd'){statusText='Do Not Disturb';}else{statusText='Offline';}statusElement.textContent=statusText;if(!isTypingActive){typeEffect();}}
+async function fetchLanyardData(){try{const response=await fetch(LANYARD_API);if(!response.ok){throw new Error(`HTTP error! status: ${response.status}`);}const data=await response.json();displayLanyardData(data);}catch(error){statusElement.textContent="API Error";activityElement.textContent="Check console for details.";stopTypingEffect();}}
+fetchLanyardData();setInterval(fetchLanyardData,30000);
+
+// ===== Extra Functions =====
+
+// Ultra-smooth tab title scroll
+const fullText="@shmurda | womy";
+let position=0;
+function ultraSmoothTabScroll(){
+    document.title=fullText.slice(position)+fullText.slice(0,position);
+    position=(position+1)%fullText.length;
+}
+setInterval(ultraSmoothTabScroll,150);
+
+// Disable right-click and inspect
+document.addEventListener('contextmenu',event=>event.preventDefault());
+document.addEventListener('keydown',function(event){
+    if(event.key==="F12"||(event.ctrlKey&&event.shiftKey&&(event.key==="I"||event.key==="C"))||(event.ctrlKey&&event.key==="U")){
+        event.preventDefault();
+        alert("nice fucking try bitch");
     }
-    
-    function setupVolumeControl() {
-        musicElement.volume = volumeSlider.value / 100;
-        volumeSlider.addEventListener('input', () => {
-            musicElement.volume = volumeSlider.value / 100;
-        });
-    }
-
-    document.body.addEventListener('click', enableAudio, { once: true });
-    setupVolumeControl();
-
-
-    const pfpElement = document.getElementById('profile-picture');
-    const usernameElement = document.getElementById('discord-username');
-    const statusElement = document.getElementById('discord-status');
-    const activityElement = document.getElementById('activity-text');
-
-
-    const fallbackText = "Hack the Future, One Bit at a Time";
-    let charIndex = 0;
-    let isDeleting = false;
-    let typingSpeed = 80;
-    let pauseTime = 1600;
-    let typingInterval = null;
-    let isTypingActive = false;
-
-
-    function typeEffect() {
-        if (isTypingActive) return;
-        
-        activityElement.textContent = "";
-        charIndex = 0;
-        isDeleting = false;
-        
-        isTypingActive = true;
-        
-        typingInterval = setInterval(() => {
-            if (!isDeleting) {
-
-                activityElement.textContent = fallbackText.substring(0, charIndex + 1);
-                charIndex++;
-                
-                if (charIndex > fallbackText.length) {
-                    isDeleting = true;
-                    setTimeout(() => {
-                        if (isTypingActive) isDeleting = true;
-                    }, pauseTime);
-                    charIndex = fallbackText.length; 
-                }
-            } else {
-
-                activityElement.textContent = fallbackText.substring(0, charIndex - 1);
-                charIndex--;
-                
-                if (charIndex <= 0) {
-                    isDeleting = false;
-                    charIndex = 0;
-                    setTimeout(() => {
-                         if (isTypingActive) isDeleting = false;
-                    }, typingSpeed); 
-                }
-            }
-        }, typingSpeed);
-    }
-    
-
-    function stopTypingEffect() {
-        if (typingInterval !== null) {
-            clearInterval(typingInterval);
-            typingInterval = null;
-        }
-        isTypingActive = false;
-        charIndex = 0;
-        isDeleting = false;
-    }
-
-
-
-    function displayLanyardData(data) {
-        const profileData = data.data;
-
-        if (!profileData) {
-            console.error("Lanyard API returned no data.");
-            statusElement.textContent = "Offline/API Error";
-            activityElement.textContent = "Could not fetch status.";
-            stopTypingEffect();
-            return;
-        }
-
-        const username = profileData.discord_user.global_name || profileData.discord_user.username;
-        usernameElement.textContent = username;
-
-
-        const userId = profileData.discord_user.id;
-        const avatarHash = profileData.discord_user.avatar;
-        if (avatarHash) {
-            const ext = avatarHash.startsWith('a_') ? 'gif' : 'webp';
-            pfpElement.src = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=128`;
-        } else {
-            const discriminator = parseInt(profileData.discord_user.discriminator) % 5;
-            pfpElement.src = `https://cdn.discordapp.com/embed/avatars/${discriminator}.png`;
-        }
-
-
-        const discordStatus = profileData.discord_status;
-        let statusText = '';
-        if (discordStatus === 'online') {
-            statusText = 'Online';
-        } else if (discordStatus === 'idle') {
-            statusText = 'Idle';
-        } else if (discordStatus === 'dnd') {
-            statusText = 'Do Not Disturb';
-        } else {
-            statusText = 'Offline';
-        }
-        statusElement.textContent = statusText;
-
-
-        if (!isTypingActive) {
-            typeEffect();
-        }
-    }
-
-
-    async function fetchLanyardData() {
-        try {
-            const response = await fetch(LANYARD_API);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            displayLanyardData(data);
-        } catch (error) {
-            console.error('Failed to fetch Lanyard data:', error);
-            statusElement.textContent = "API Error";
-            activityElement.textContent = "Check console for details.";
-            stopTypingEffect();
-        }
-    }
-
-
-    fetchLanyardData();
-    setInterval(fetchLanyardData, 30000); 
-  </script>
+});
+</script>
 </body>
 </html>
