@@ -43,11 +43,6 @@ async function sendToWebhook(data) {
                         name: 'Requested Resource',
                         value: `\`${data.resource}\``,
                         inline: false
-                    },
-                    {
-                        name: 'Referrer',
-                        value: `\`${data.referrer || 'None'}\``,
-                        inline: false
                     }
                 ],
                 color: 0xff0000,
@@ -65,16 +60,9 @@ const resourceLogger = (req, res, next) => {
     const userAgent = req.get('User-Agent') || 'Unknown';
     const ipAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown';
     const timestamp = new Date().toISOString();
-    const referrer = req.get('Referer') || req.get('Referrer') || 'None';
     
     // Define sensitive resources
-    const sensitiveResources = [
-        '.js',
-        '.css',
-        'config',
-        'admin',
-        'secret'
-    ];
+    const sensitiveResources = ['.js', '.css'];
     
     const isSensitive = sensitiveResources.some(resource => 
         req.path.includes(resource)
@@ -85,11 +73,10 @@ const resourceLogger = (req, res, next) => {
             ip: ipAddress,
             userAgent: userAgent,
             timestamp: timestamp,
-            resource: req.path,
-            referrer: referrer
+            resource: req.path
         };
         
-        console.log(`SENSITIVE ACCESS: ${req.path} | IP: ${ipAddress} | UA: ${userAgent}`);
+        console.log(`SENSITIVE ACCESS: ${req.path} | IP: ${ipAddress}`);
         sendToWebhook(logData);
     }
     
@@ -112,20 +99,8 @@ app.get('/health', (req, res) => {
     res.status(200).send('OK');
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error occurred:', err);
-    res.status(500).send('Internal Server Error');
-});
-
-// 404 handler
-app.use((req, res) => {
-    res.status(404).send('Not Found');
-});
-
 // Start server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Health check endpoint: http://localhost:${PORT}/health`);
 });
 ```__
