@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>@womy</title>
+
+  <!-- TAB ICON -->
+  <link rel="icon" type="png" href="https://file.garden/aRHXz8E_TglHT95c/primo.png">
+
+  <style>
+    :root {
+      --bg: url('https://i.imgur.com/3AlbXmt.gif');
+      --pfp: url('https://file.garden/aRHXz8E_TglHT95c/primo.png');
+      --scale: 1.25;
+      --blur: calc(12px * var(--scale));
+      --text: #ffffff;
+      --online: #43b581;
+      --idle: #faa61a;
+      --dnd: #f04747;
+      --offline: #747f8d;
+      --spotify: #1db954;
+    }
+
+    html, body { height: 100%; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--text); background: #000; }
+
+    /* CLICK TO ENTER SCREEN */
+    #startScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      cursor: pointer;
+      transition: opacity .6s ease;
+    }
+    #startScreen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .startText {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: white;
+      animation: pulse 1.8s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0% { opacity: .55; }
+      50% { opacity: 1; }
+      100% { opacity: .55; }
+    }
+
+    .bg { 
+      position: fixed; 
+      inset: 0; 
+      background-image: var(--bg); 
+      background-size: cover; 
+      background-position: center; 
+      background-repeat: no-repeat;
+      filter: blur(var(--blur)); 
+      transform: scale(1.06); 
+      z-index: 0; 
+    }
+    .dim { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 1; }
+    #fx { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+    .wrap { position: relative; min-height: 100%; display: grid; place-items: center; z-index: 3; }
+    .content { display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--scale)); text-align: center; padding: calc(24px * var(--scale)); }
+    .logos { display: flex; justify-content: center; align-items: center; gap: calc(10px * var(--scale)); margin-top: calc(4px * var(--scale)); }
+    .logos img { width: calc(28px * var(--scale)); height: calc(28px * var(--scale)); object-fit: contain; }
+    .social { display: flex; justify-content: center; align-items: center; gap: calc(12px * var(--scale)); margin-top: calc(10px * var(--scale)); }
+    .social a { display: inline-flex; width: calc(30px * var(--scale)); height: calc(30px * var(--scale)); align-items: center; justify-content: center; border-radius: 8px; transition: transform .18s ease, filter .18s ease; }
+    .social a:hover { transform: scale(1.12); filter: brightness(1.08); }
+    .social img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .pfp-container { position: relative; display: inline-block; }
+    .pfp { width: calc(120px * var(--scale)); height: calc(120px * var(--scale)); border-radius: 50%; background-image: var(--pfp); background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,.35); transition: transform .25s ease, filter .25s ease; }
+    .pfp:hover { transform: scale(1.1); filter: brightness(1.05); }
+    .status-indicator {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 3px solid #000;
+      background-color: var(--offline);
+      display: none; /* Hidden as requested */
+    }
+    .name { font-size: calc(28px * var(--scale)); font-weight: 700; letter-spacing: .2px; position: relative; }
+    .name .label { background: linear-gradient(90deg, #ffffff 0%, #d9d9d9 50%, #ffffff 100%); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: namePop .5s ease-out both, nameGradient 6s ease-in-out infinite; display: inline-block; position: relative; z-index: 1; }
+    .name .glow { position: absolute; left: 0; top: 0; color: #ffffff; opacity: .85; text-shadow: 0 0 calc(3px * var(--scale)) rgba(255,255,255,.55), 0 0 calc(8px * var(--scale)) rgba(255,255,255,.4), 0 0 calc(16px * var(--scale)) rgba(255,255,255,.3); pointer-events: none; z-index: 0; animation: glowPulse 5s ease-in-out infinite; }
+    @keyframes glowPulse { 0% { opacity: .75 } 50% { opacity: 1 } 100% { opacity: .75 } }
+    @keyframes namePop { 0% { opacity: 0; transform: translateY(6px) scale(.98) } 100% { opacity: 1; transform: translateY(0) scale(1) } }
+    @keyframes nameGradient { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+    .bio { font-size: calc(14px * var(--scale)); color: #cfcfe6; }
+    .status { margin-top: calc(6px * var(--scale)); font-size: calc(12px * var(--scale)); color: #bdbde0; text-shadow: 0 0 2px rgba(255,255,255,.45), 0 0 6px rgba(255,255,255,.25); animation: bloomPulse 4s ease-in-out infinite; }
+    .activity { 
+      margin-top: calc(8px * var(--scale)); 
+      font-size: calc(13px * var(--scale)); 
+      color: #bdbde0; 
+      background: rgba(0,0,0,0.3); 
+      padding: 8px 12px; 
+      border-radius: 8px; 
+      max-width: 300px; 
+      text-align: center;
+      display: none;
+    }
+    .activity.show { display: block; }
+    .activity.spotify {
+      border-left: 3px solid var(--spotify);
+    }
+    .activity.playing {
+      border-left: 3px solid var(--online);
+    }
+    @keyframes bloomPulse { 0% { text-shadow: 0 0 2px rgba(255,255,255,.35) } 50% { text-shadow: 0 0 4px rgba(255,255,255,.6) } 100% { text-shadow: 0 0 2px rgba(255,255,255,.35) } }
+    @media (max-width: 420px) { 
+      .pfp { width: calc(96px * var(--scale)); height: calc(96px * var(--scale)); } 
+      .name { font-size: calc(24px * var(--scale)); } 
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+</head>
+
+<body>
+
+  <!-- MUSIC (HIDDEN) -->
+  <audio id="bgMusic" loop preload="auto"
+    src="https://cdn.discordapp.com/attachments/1438416051644661852/1449242064968482817/videoplayback.mp3?ex=693e2f59&is=693cddd9&hm=2165501f23527fedd2f211ef1e0259d4210bfea935ab9208a1ab0ad8013ae39d&">
+  </audio>
+
+  <!-- CLICK TO ENTER SCREEN -->
+  <div id="startScreen">
+    <div class="startText">NIGGERS</div>
+  </div>
+
+  <div class="bg"></div>
+  <div class="dim"></div>
+  <canvas id="fx"></canvas>
+
+  <main class="wrap">
+    <section class="content" aria-label="Profile card">
+      <div class="pfp-container">
+        <div class="pfp"></div>
+        <div class="status-indicator"></div>
+      </div>
+      <div class="name"><span class="label">womy</span><span aria-hidden="true" class="glow">womy</span></div>
+      <div class="logos">
+        <img src="https://cdn.discordapp.com/emojis/1095025936598048769.webp?size=96&animated=true" alt="logo-1">
+        <img src="https://cdn.discordapp.com/emojis/1364761426249388173.webp?size=96&animated=true" alt="logo-2">
+        <img src="https://cdn.discordapp.com/emojis/1448186197812707438.webp?size=96&animated=true" alt="logo-3">
+      </div>
+      <div class="bio">Peace Over War</div>
+      <div class="status">Anti Revshit</div>
+      <div class="activity"></div>
+      <div class="social" aria-label="social links">
+        <a href="https://discordapp.com/users/1184454687865438218" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+          <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord">
+        </a>
+        <a href="https://www.instagram.com/womy.zxc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram">
+        </a>
+        <a href="https://github.com/womyzxc" target="_blank" rel="noopener noreferrer" aria-label="Github">
+          <img src="https://cdn.simpleicons.org/github/ffffff" alt="Github">
+        </a>
+        <a href="https://www.youtube.com/@womyxyz" target="_blank" rel="noopener noreferrer" aria-label="Youtube">
+          <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="Youtube">          
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- LANYARD SCRIPT -->
+  <script>
+    // Lanyard Integration
+    const userId = '1184454687865438218'; // Your Discord ID
+    const bioEl = document.querySelector('.bio');
+    const statusEl = document.querySelector('.status');
+    const statusIndicator = document.querySelector('.status-indicator');
+    const activityEl = document.querySelector('.activity');
+    const pfpEl = document.querySelector('.pfp');
+    const nameEl = document.querySelector('.name .label');
+    const canvas = document.getElementById('fx');
+    const ctx = canvas.getContext('2d');
+    const SCALE = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scale')) || 1;
+
+    // Store default values
+    const defaultBio = bioEl.textContent;
+    const defaultStatus = statusEl.textContent;
+
+    // Set initial profile data immediately
+    function setInitialProfile() {
+      nameEl.textContent = "womy";
+      document.title = "@womy";
+      
+      // Set avatar to your custom image
+      document.documentElement.style.setProperty('--pfp', `url('https://file.garden/aRHXz8E_TglHT95c/primo.png')`);
+    }
+
+    // Initialize Lanyard WebSocket connection
+    function initLanyard() {
+      const socket = new WebSocket('wss://lanyard.rest/socket');
+      let interval;
+
+      socket.addEventListener('open', event => {
+        // Send heartbeat immediately after connection
+        socket.send(JSON.stringify({ op: 1 }));
+        
+        // Subscribe to user presence
+        socket.send(JSON.stringify({
+          op: 2,
+          d: {
+            subscribe_to_ids: [userId]
+          }
+        }));
+
+        // Set up heartbeat interval
+        interval = setInterval(() => {
+          socket.send(JSON.stringify({ op: 1 }));
+        }, 30000);
+      });
+
+      socket.addEventListener('message', event => {
+        const { t, d } = JSON.parse(event.data);
+
+        if (t === 'INIT_STATE' || t === 'PRESENCE_UPDATE') {
+          updateProfile(d);
+        }
+      });
+
+      socket.addEventListener('close', () => {
+        clearInterval(interval);
+        // Reconnect after 5 seconds
+        setTimeout(initLanyard, 5000);
+      });
+      
+      socket.addEventListener('error', (error) => {
+        console.error('Lanyard WebSocket error:', error);
+      });
+    }
+
+    function updateProfile(data) {
+      // Update username
+      if (data.discord_user?.username) {
+        const username = data.discord_user.username;
+        nameEl.textContent = username;
+        document.title = `@${username}`;
+      }
+
+      // Update custom status (only if exists)
+      const customStatus = data.activities?.find(activity => activity.type === 4);
+      if (customStatus?.state) {
+        bioEl.textContent = customStatus.state;
+      } else {
+        // Restore default bio if no custom status
+        bioEl.textContent = defaultBio;
+      }
+
+      // Update activity
+      updateActivity(data.activities?.filter(activity => activity.type !== 4) || []);
+    }
+
+    function updateActivity(activities) {
+      activityEl.classList.remove('show');
+      
+      if (activities.length === 0) return;
+      
+      const activity = activities[0];
+      
+      if (activity.name === 'Spotify' && activity.assets) {
+        const track = activity.details || 'Unknown Track';
+        const artist = activity.state || 'Unknown Artist';
+        
+        activityEl.innerHTML = `
+          <div>Listening to <strong>${track}</strong></div>
+          <div>by <strong>${artist}</strong></div>
+        `;
+        activityEl.className = 'activity spotify show';
+        return;
+      }
+      
+      // For other activities
+      if (activity.name) {
+        let text = `<div>${activity.name}</div>`;
+        
+        if (activity.details) {
+          text += `<div>${activity.details}</div>`;
+        }
+        
+        if (activity.state) {
+          text += `<div>${activity.state}</div>`;
+        }
+        
+        activityEl.innerHTML = text;
+        activityEl.className = 'activity playing show';
+      }
+    }
+
+    // Initialize canvas effects
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    let resizeScheduled = false;
+    window.addEventListener('resize', () => {
+      if (!resizeScheduled) {
+        resizeScheduled = true;
+        requestAnimationFrame(() => { resize(); resizeScheduled = false; });
+      }
+    });
+
+    const snow = [];
+    const snowCount = 100;
+    function initSnow() {
+      snow.length = 0;
+      for (let i = 0; i < snowCount; i++) {
+        snow.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.6 + 0.6,
+          v: Math.random() * 0.5 + 0.3
+        });
+      }
+    }
+    initSnow();
+
+    function drawSnow() {
+      ctx.shadowColor = 'rgba(255,255,255,0.6)';
+      ctx.shadowBlur = 6 * SCALE;
+      for (const p of snow) {
+        p.y += p.v;
+        if (p.y - p.r > canvas.height) {
+          p.y = -p.r;
+          p.x = Math.random() * canvas.width;
+        }
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * SCALE, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    }
+
+    const maxTrail = Math.round(100 * SCALE);
+    const poolSize = 120;
+    const trail = new Array(poolSize).fill(0).map(() => ({ x:0,y:0,r:0,life:0,decay:0,vx:0,vy:0,scale:1 }));
+    let nextIdx = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 4; i++) {
+        const p = trail[nextIdx++ % poolSize];
+        p.x = e.clientX;
+        p.y = e.clientY;
+        p.r = (Math.random() * 1.4 + 0.6) * SCALE;
+        p.life = 1;
+        p.decay = Math.random() * 0.03 + 0.02;
+        p.vx = (Math.random() - 0.5) * 0.6;
+        p.vy = Math.random() * 0.8 + 0.3;
+        p.scale = 1;
+      }
+    });
+
+    function drawTrail() {
+      ctx.shadowColor = 'rgba(255,255,255,0.8)';
+      ctx.shadowBlur = 6 * SCALE;
+      let active = 0;
+      for (const p of trail) {
+        if (p.life <= 0) continue;
+        active++;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.01;
+        p.life -= p.decay;
+        p.scale = Math.max(0, p.life);
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * p.scale, 0, Math.PI * 2);
+        ctx.fill();
+        if (active > maxTrail) break;
+      }
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawSnow();
+      drawTrail();
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // Initialize profile when page loads
+    window.addEventListener('load', () => {
+      setInitialProfile();
+      initLanyard();
+    });
+
+    // CLICK TO ENTER + MUSIC START
+    const startScreen = document.getElementById("startScreen");
+    const bgMusic = document.getElementById("bgMusic");
+
+    startScreen.addEventListener("click", () => {
+      startScreen.classList.add("hidden");
+      setTimeout(() => startScreen.remove(), 700);
+
+      bgMusic.volume = 0.75;
+      bgMusic.play().catch(() => {});
+    });
+  </script>
+
+  <!-- ANTI-INSPECT -->
+  <script>
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+    document.addEventListener("dragstart", (e) => e.preventDefault());
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "F12") e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase())) e.preventDefault();
+      if (e.ctrlKey && e.key.toUpperCase() === "U") e.preventDefault();
+      if (e.ctrlKey && e.key.toUpperCase() === "S") e.preventDefault();
+      if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === "K") e.preventDefault();
+    });
+
+    setInterval(() => {
+      const start = performance.now();
+      debugger;
+      if (performance.now() - start > 200) {
+        window.location.href = "about:blank";
+      }
+    }, 400);
+  </script>
+
+</body>
+</html>
